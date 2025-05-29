@@ -1,0 +1,40 @@
+khelio-clone/
+├── .next/                  # Next.js build output
+├── public/                 # Static files
+├── src/
+│   ├── app/               # Next.js 13+ app directory
+│   │   ├── create/page.tsx        # Create game page
+│   │   ├── games/[id]/page.tsx         # Games listing page
+│   │   ├── favicon.ico    # Site favicon
+│   │   ├── globals.css    # Global styles
+│   │   ├── layout.tsx     # Root layout
+│   │   └── page.tsx       # Home page
+│   ├── auth/              # Authentication related code
+│   │   └── firebaseAuth.ts
+│   ├── components/        # Reusable components
+│   │   ├── CreateGameButton.tsx
+│   │   ├── GameCard.tsx
+│   │   └── GoogleSignInButton.tsx
+│   ├── config/            # Configuration files
+│   │   └── rateLimit.ts
+│   ├── constants/         # Constant values
+│   ├── lib/              # Shared libraries
+│   │   ├── createUserIfNotExists.ts
+│   │   ├── firebaseAdmin.ts
+│   │   ├── firebaseConfig.ts
+│   │   └── firebase.ts
+│   ├── pages/            # Pages directory
+│   │   ├── api/          # API routes
+│   │   │   ├── create-game.ts
+│   │   │   └── game-quota.ts
+│   │   └── _app.tsx
+│   └── utils/            # Utility functions
+├── .gitignore            # Git ignore rules
+├── eslint.config.mjs     # ESLint configuration
+├── next-env.d.ts         # Next.js TypeScript declarations
+├── next.config.ts        # Next.js configuration
+├── package.json          # Project dependencies and scripts
+├── package-lock.json     # Locked dependencies
+├── postcss.config.mjs    # PostCSS configuration
+├── README.md             # Project documentation
+└── tsconfig.json         # TypeScript configuration 

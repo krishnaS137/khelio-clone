@@ -1,103 +1,82 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { app } from "@/lib/firebase";
+import GameCard from "@/components/GameCard";
+import GoogleSignInButton from "@/components/GoogleSignInButton";
+import CreateGameButton from "@/components/CreateGameButton";
+import DashboardButton from "@/components/DashboardButton";
+import NavigationButtons from "@/components/NavigationButtons";
+
+type Game = {
+  id: string;
+  title: string;
+  htmlContent: string;
+  imageUrl: string;
+  userId: string;
+};
+
+export default function HomePage() {
+  const [games, setGames] = useState<Game[]>([]);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      const db = getFirestore(app);
+      const gamesCollection = collection(db, "games");
+      const querySnapshot = await getDocs(gamesCollection);
+      const gameData: Game[] = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.title,
+          htmlContent: data.htmlContent,
+          imageUrl: data.imageUrl,
+          userId: data.userId,
+        };
+      });
+      setGames(gameData);
+    };
+
+    fetchGames();
+  }, []);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="min-h-screen bg-black-100 relative px-8 py-12 max-w-6xl mx-auto">
+      {/* Top-right Sign In Button */}
+      <h1 className="text-3xl font-bold mb-4">Generate a New Game</h1>
+      <div className="flex gap-4 mb-8">
+        <CreateGameButton />
+        <NavigationButtons />
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <div className="absolute top-6 right-8 flex gap-4">
+        <DashboardButton />
+        <GoogleSignInButton />
+      </div>
+
+      {/* Centered Welcome Title */}
+      <div className="flex items-center justify-center h-[50vh] mb-12">
+        <h1 className="text-4xl font-bold text-center text-white">
+          Welcome to Khelio Clone 🎮
+        </h1>
+      </div>
+
+      {/* Games Gallery */}
+      <div className="max-w-6xl mx-auto px-8">
+        <h2 className="text-2xl font-semibold mb-8 text-center text-white">
+          Games Gallery
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-center">
+          {games.length === 0 ? (
+            <p className="text-white text-center col-span-full">
+              Loading games...
+            </p>
+          ) : (
+            games.map((game) => <GameCard key={game.id} {...game} />)
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+    </main>
   );
 }
